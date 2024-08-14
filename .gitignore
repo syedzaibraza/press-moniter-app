@@ -1,0 +1,47 @@
+# Expo
+.expo/
+.expo-shared/
+
+# React Native
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+package-lock.json
+yarn.lock
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Android
+.android/
+*.apk
+*.ap_
+*.dex
+*.jar
+*.keystore
+*.hprof
+
+# iOS
+ios/Pods/
+ios/*.xcworkspace
+ios/*.xcuserstate
+*.xcuserdatad/
+*.xcuserdata/
+*.xcscheme
+*.xcscheme/
+
+# VSCode
+.vscode/
+
+# Log files
+*.log
+
+# Build output
+build/
+dist/
+
