@@ -18,7 +18,6 @@ import { Image } from "expo-image";
 import logo from "@/assets/images/logo.png";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const initialValues = {
@@ -37,7 +36,6 @@ const Login = () => {
     onSubmit: async (values: any, { setSubmitting }: any) => {
       setError("");
       try {
-        console.log("values", values);
         //   @ts-ignore: Unreachable code error
         router.push("/home");
       } catch (err: any) {
@@ -109,7 +107,7 @@ const Login = () => {
               Don't have an account?
             </Text>
             <Link
-              href="/signup"
+              href="/sign-up"
               className="text-lg font-semibold text-secondary"
             >
               Signup

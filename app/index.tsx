@@ -1,26 +1,26 @@
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  View,
-  TouchableOpacity,
-} from "react-native";
-import React from "react";
+import { useEffect, useState } from "react";
 import { router } from "expo-router";
 
-const Home = () => {
-  return (
-    <SafeAreaView>
-      <View className="justify-center w-full min-h-[85vh] px-4 my-6">
-        <Text
-          onPress={() => router.push("/login")}
-          className="text-red-500 text-xl"
-        >
-          Login Page
-        </Text>
-      </View>
-    </SafeAreaView>
-  );
-};
+export default function IndexPage() {
+  const [isReady, setIsReady] = useState(false);
+  const session = ""; // Replace with your actual session check
 
-export default Home;
+  useEffect(() => {
+    const initialize = async () => {
+      setIsReady(true);
+    };
+    initialize();
+  }, []);
+
+  useEffect(() => {
+    if (isReady) {
+      if (session) {
+        router.replace("/(app)/home");
+      } else {
+        router.replace("/(auth)/sign-in");
+      }
+    }
+  }, [isReady]);
+
+  return null;
+}
