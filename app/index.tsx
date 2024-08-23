@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function IndexPage() {
   const [isReady, setIsReady] = useState(false);
-  const session = ""; // Replace with your actual session check
+  const [session, setSession] = useState<string | null>(null);
 
   useEffect(() => {
     const initialize = async () => {
+      // setSession((await AsyncStorage.getItem("token")) ?? null);
       setIsReady(true);
     };
     initialize();

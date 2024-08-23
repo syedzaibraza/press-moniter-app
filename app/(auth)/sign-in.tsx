@@ -16,9 +16,12 @@ import Button from "@/components/Button";
 import { Image } from "expo-image";
 // @ts-ignore: Unreachable code error
 import logo from "@/assets/images/logo.png";
+import { login } from "@/services/authService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
   const [error, setError] = useState("");
+  const navigation = useNavigation();
 
   const initialValues = {
     login: "",
@@ -36,7 +39,10 @@ const Login = () => {
     onSubmit: async (values: any, { setSubmitting }: any) => {
       setError("");
       try {
-        //   @ts-ignore: Unreachable code error
+        const data = await login(values.login, values.password);
+        await AsyncStorage.setItem("name", data?.data["name"]);
+        await AsyncStorage.setItem("token", data?.data["x-api-key"]);
+        alert("Login successful");
         router.push("/home");
       } catch (err: any) {
         if (err instanceof Error) {
@@ -92,12 +98,18 @@ const Login = () => {
             ) : null}
           </View>
           <View className="flex justify-end mb-3 flex-row gap-2">
-            <Text className="text-lg text-black font-regular">
+            <Text
+              onPress={() => {
+                AsyncStorage.removeItem("token");
+                AsyncStorage.removeItem("name");
+              }}
+              className="text-lg text-black font-regular"
+            >
               Forgot password
             </Text>
           </View>
           <Button
-            title="Submit"
+            title="Login"
             handlePress={formik.handleSubmit}
             isLoading={formik.isSubmitting}
           />
