@@ -14,13 +14,13 @@ const FormField = ({
   onBlur,
   autoCapitalize = "none",
   otherStyles,
+  showPassword,
+  handleShowPassword,
   ...props
 }: any) => {
-  const [showPassword, setShowPassword] = useState(false);
-
   return (
     <View className={`space-y-2 ${otherStyles}`}>
-      <Text className="text-base text-black font-pmedium">{title}</Text>
+      <Text className="text-base text-black font-medium">{title}</Text>
 
       <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-blue-400 flex flex-row items-center">
         <TextInput
@@ -31,12 +31,19 @@ const FormField = ({
           placeholderTextColor="#7B7B8B"
           onChangeText={handleChangeText}
           onBlur={onBlur}
-          secureTextEntry={title === "Password" && !showPassword}
+          secureTextEntry={
+            (title === "Password" ||
+              title === "Password *" ||
+              title === "Confirm Password *") &&
+            !showPassword
+          }
           {...props}
         />
 
-        {title === "Password" && (
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+        {(title === "Password" ||
+          title === "Password *" ||
+          title === "Confirm Password *") && (
+          <TouchableOpacity onPress={handleShowPassword}>
             <Image
               source={!showPassword ? eye : eyeHide}
               className="w-6 h-6"

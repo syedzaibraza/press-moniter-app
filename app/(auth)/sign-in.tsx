@@ -22,6 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Login = () => {
   const [error, setError] = useState("");
   const navigation = useNavigation();
+  const [showPassword, setShowPassword] = useState(true);
 
   const initialValues = {
     login: "",
@@ -42,7 +43,6 @@ const Login = () => {
         const data = await login(values.login, values.password);
         await AsyncStorage.setItem("name", data?.data["name"]);
         await AsyncStorage.setItem("token", data?.data["x-api-key"]);
-        alert("Login successful");
         router.push("/home");
       } catch (err: any) {
         if (err instanceof Error) {
@@ -88,6 +88,8 @@ const Login = () => {
               title="Password"
               placeholder="Enter your password"
               value={formik.values.password}
+              showPassword={!showPassword}
+              handleShowPassword={() => setShowPassword(!showPassword)}
               handleChangeText={formik.handleChange("password")}
               onBlur={formik.handleBlur("password")}
             />
@@ -98,15 +100,16 @@ const Login = () => {
             ) : null}
           </View>
           <View className="flex justify-end mb-3 flex-row gap-2">
-            <Text
-              onPress={() => {
-                AsyncStorage.removeItem("token");
-                AsyncStorage.removeItem("name");
-              }}
-              className="text-lg text-black font-regular"
+            <TouchableOpacity
+            // onPress={() => {
+            //   router.push("/forget-password");
+            // }}
             >
-              Forgot password
-            </Text>
+              <Text className="text-base text-black font-regular">
+                {" "}
+                Forgot password
+              </Text>
+            </TouchableOpacity>
           </View>
           <Button
             title="Login"
