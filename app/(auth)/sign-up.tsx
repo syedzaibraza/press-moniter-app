@@ -49,7 +49,7 @@ const Signup: React.FC = () => {
       try {
         const data = await signup(values);
         alert("Signup successful");
-        router.push("/home");
+        router.push("/sign-in");
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);

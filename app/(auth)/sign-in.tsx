@@ -43,7 +43,7 @@ const Login = () => {
         const data = await login(values.login, values.password);
         await AsyncStorage.setItem("name", data?.data["name"]);
         await AsyncStorage.setItem("token", data?.data["x-api-key"]);
-        router.push("/home");
+        router.push("/dashboard");
       } catch (err: any) {
         if (err instanceof Error) {
           setError(err.message);
@@ -101,12 +101,11 @@ const Login = () => {
           </View>
           <View className="flex justify-end mb-3 flex-row gap-2">
             <TouchableOpacity
-            // onPress={() => {
-            //   router.push("/forget-password");
-            // }}
+              onPress={() => {
+                router.push("/forget-password");
+              }}
             >
               <Text className="text-base text-black font-regular">
-                {" "}
                 Forgot password
               </Text>
             </TouchableOpacity>

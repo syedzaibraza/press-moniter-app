@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { router } from "expo-router";
 
-const Home = () => {
+const Dashboard = () => {
   return (
     <View>
       <Text
@@ -11,10 +11,10 @@ const Home = () => {
         }}
       >
         {" "}
-        Home
+        Dashboard
       </Text>
     </View>
   );
 };
 
-export default Home;
+export default Dashboard;

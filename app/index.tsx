@@ -8,7 +8,7 @@ export default function IndexPage() {
 
   useEffect(() => {
     const initialize = async () => {
-      // setSession((await AsyncStorage.getItem("token")) ?? null);
+      setSession((await AsyncStorage.getItem("token")) ?? null);
       setIsReady(true);
     };
     initialize();
@@ -17,7 +17,7 @@ export default function IndexPage() {
   useEffect(() => {
     if (isReady) {
       if (session) {
-        router.replace("/(app)/home");
+        router.replace("/dashboard");
       } else {
         router.replace("/(auth)/sign-in");
       }
