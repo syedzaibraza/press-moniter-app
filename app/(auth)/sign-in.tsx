@@ -20,8 +20,6 @@ import { login } from "@/services/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
-  const [error, setError] = useState("");
-  const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(true);
 
   const initialValues = {
@@ -38,18 +36,13 @@ const Login = () => {
     initialValues,
     validationSchema,
     onSubmit: async (values: any, { setSubmitting }: any) => {
-      setError("");
       try {
         const data = await login(values.login, values.password);
         await AsyncStorage.setItem("name", data?.data["name"]);
         await AsyncStorage.setItem("token", data?.data["x-api-key"]);
         router.push("/dashboard");
       } catch (err: any) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred during login");
-        }
+        alert(err.message);
       } finally {
         setSubmitting(false);
       }
@@ -86,6 +79,7 @@ const Login = () => {
           <View className="mb-4">
             <FormField
               title="Password"
+              type="password"
               placeholder="Enter your password"
               value={formik.values.password}
               showPassword={!showPassword}
@@ -115,7 +109,6 @@ const Login = () => {
             handlePress={formik.handleSubmit}
             isLoading={formik.isSubmitting}
           />
-          {error && <Text className="text-red-500 mt-4">{error}</Text>}
           <View className="flex justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-600 font-regular">
               Don't have an account?

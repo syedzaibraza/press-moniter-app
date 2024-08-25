@@ -8,6 +8,7 @@ import eyeHide from "@/assets/icons/eyeHide.svg";
 
 const FormField = ({
   title,
+  type,
   value,
   placeholder,
   handleChangeText,
@@ -31,18 +32,11 @@ const FormField = ({
           placeholderTextColor="#7B7B8B"
           onChangeText={handleChangeText}
           onBlur={onBlur}
-          secureTextEntry={
-            (title === "Password" ||
-              title === "Password *" ||
-              title === "Confirm Password *") &&
-            !showPassword
-          }
+          secureTextEntry={type === "password" && !showPassword ? true : false}
           {...props}
         />
 
-        {(title === "Password" ||
-          title === "Password *" ||
-          title === "Confirm Password *") && (
+        {type === "password" && (
           <TouchableOpacity onPress={handleShowPassword}>
             <Image
               source={!showPassword ? eye : eyeHide}

@@ -13,7 +13,6 @@ import logo from "@/assets/images/logo.png";
 const Signup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
-  const [error, setError] = useState("");
   const router = useRouter();
 
   const initialValues = {
@@ -45,17 +44,12 @@ const Signup: React.FC = () => {
     initialValues,
     validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      setError("");
       try {
         const data = await signup(values);
         alert("Signup successful");
         router.push("/sign-in");
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred during signup");
-        }
+      } catch (err: any) {
+        alert(err.message);
       } finally {
         setSubmitting(false);
       }
@@ -112,6 +106,7 @@ const Signup: React.FC = () => {
               <View className="mb-4">
                 <FormField
                   title="Password *"
+                  type="password"
                   placeholder="Enter your password"
                   value={formik.values.password}
                   handleChangeText={formik.handleChange("password")}
@@ -129,6 +124,7 @@ const Signup: React.FC = () => {
               <View className="mb-4">
                 <FormField
                   title="Confirm Password *"
+                  type="password"
                   placeholder="Enter your password"
                   value={formik.values.confirm_password}
                   showPassword={!showConfirmPassword}
