@@ -53,7 +53,9 @@ const Dashboard = () => {
       >
         {services?.map((item) => (
           <TouchableOpacity
-            onPress={() => router.push(`/${item.type}/${item.identifier}`)}
+            onPress={() => {
+              router.push(`/${item.type}/${item.identifier}`);
+            }}
             key={item.identifier}
             className="flex-row w-full items-center p-3 border border-gray-300 rounded-xl mb-4 bg-white"
           >

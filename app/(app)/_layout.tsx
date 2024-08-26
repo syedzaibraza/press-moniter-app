@@ -47,6 +47,12 @@ export default function Layout() {
             title: "Profile",
           }}
         />
+        <Drawer.Screen
+          name="[type]/[identifier]"
+          options={{
+            title: "Detail Page",
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );
