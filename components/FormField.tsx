@@ -17,15 +17,27 @@ const FormField = ({
   otherStyles,
   showPassword,
   handleShowPassword,
+  loading = false,
   ...props
 }: any) => {
+  console.log("FormField", {
+    title,
+    value,
+  });
   return (
     <View className={`space-y-2 ${otherStyles}`}>
       <Text className="text-base text-black font-medium">{title}</Text>
 
-      <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-blue-400 flex flex-row items-center">
+      <View
+        className={`  ${
+          loading ? "bg-gray-200 border-gray-300 rounded-2xl" : "border-black"
+        }w-full h-16 px-4 bg-black-100 rounded-2xl border-2 focus:border-blue-400 flex flex-row items-center`}
+      >
         <TextInput
-          className="flex-1 text-black font-semibold text-base"
+          editable={!loading}
+          className={`flex-1 text-black font-semibold text-base
+          ${loading && "text-gray-500"}
+          `}
           value={value}
           autoCapitalize={autoCapitalize}
           placeholder={placeholder}
@@ -33,6 +45,7 @@ const FormField = ({
           onChangeText={handleChangeText}
           onBlur={onBlur}
           secureTextEntry={type === "password" && !showPassword ? true : false}
+          keyboardType={type === "number" ? "numeric" : "default"}
           {...props}
         />
 
