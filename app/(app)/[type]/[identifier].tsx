@@ -6,10 +6,10 @@ import {
   ActivityIndicator,
   SafeAreaView,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { getFormatedDate } from "@/utils/getFormatedDate";
-import DateTimePicker from "@react-native-community/datetimepicker";
 //@ts-ignore
 import computer from "@/assets/images/computer.png";
 //@ts-ignore
@@ -22,6 +22,8 @@ import PdType from "@/components/Pd";
 import TvType from "@/components/Tv";
 import PdfType from "@/components/Pdf";
 import MmType from "@/components/Mm";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { AntDesign } from "@expo/vector-icons";
 
 type ImageErrorState = Record<string, boolean>;
 
@@ -32,13 +34,14 @@ const PdPage = () => {
   const [pdService, setPdService] = useState<any | null>(null);
   const [imageError, setImageError] = useState<ImageErrorState>({});
   const [selectedDate, setSelectedDate] = useState<any | null>(null);
-  console.log(identifier, type);
+  const [showDate, setShowDate] = useState(false);
 
   const handleDateChange = (event: any, date: any) => {
-    if (date) {
+    if (event.type === "set" && date) {
       const formattedDate = getFormatedDate(date);
       setSelectedDate(formattedDate);
     }
+    setShowDate(false);
   };
 
   const handleImageError = (identifier_id: any) => {
@@ -47,11 +50,6 @@ const PdPage = () => {
       [identifier_id]: true,
     }));
   };
-  useEffect(() => {
-    if ((params as { type: string })?.type === type) {
-      setSelectedDate(null);
-    }
-  }, [params]);
 
   useEffect(() => {
     const getServicesData = async () => {
@@ -67,21 +65,41 @@ const PdPage = () => {
       }
     };
     getServicesData();
-  }, [params, selectedDate]);
-  console.log(type, pdService);
+  }, [identifier, selectedDate]);
 
-  if (loading)
+  if (loading) {
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-white">
         <ActivityIndicator size="large" color="#C80202" />
       </SafeAreaView>
     );
-  console.log("PPPP", Platform.OS);
+  }
 
   return (
     <ScrollView className="flex-1 p-4">
       <View className="mb-4 w-full items-start">
-        {Platform.OS === "ios" && (
+        {Platform.OS === "android" ? (
+          <View className="bg-gray-300 rounded-lg p-2">
+            <TouchableOpacity
+              className="flex-row  items-center gap-2"
+              onPress={() => setShowDate(true)}
+            >
+              <AntDesign name="calendar" size={24} />
+              <Text className="text-base ">
+                {pdService?.date ? getFormatedDate(pdService.date) : null}
+              </Text>
+            </TouchableOpacity>
+            {showDate && (
+              <DateTimePicker
+                value={pdService?.date ? new Date(pdService.date) : new Date()}
+                mode="date"
+                display="calendar"
+                onChange={handleDateChange}
+                maximumDate={new Date()}
+              />
+            )}
+          </View>
+        ) : (
           <DateTimePicker
             value={pdService?.date ? new Date(pdService.date) : new Date()}
             mode="date"
@@ -115,19 +133,16 @@ const PdPage = () => {
         </View>
       </View>
 
-      {type === "pd" ? (
+      {type === "pd" && (
         <PdType
           pdService={pdService}
           handleImageError={handleImageError}
           imageError={imageError}
         />
-      ) : type === "pdf" ? (
-        <PdfType />
-      ) : type === "tv" ? (
-        <TvType />
-      ) : type === "mm" ? (
-        <MmType />
-      ) : null}
+      )}
+      {type === "pdf" && <PdfType />}
+      {type === "tv" && <TvType />}
+      {type === "mm" && <MmType />}
     </ScrollView>
   );
 };
