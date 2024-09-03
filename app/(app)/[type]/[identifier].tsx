@@ -27,7 +27,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 type ImageErrorState = Record<string, boolean>;
 
-const PdPage = () => {
+const DetailPage = () => {
   const { params } = useRoute();
   const { type, identifier } = params as { type: string; identifier: string };
   const [loading, setLoading] = useState(false);
@@ -141,10 +141,16 @@ const PdPage = () => {
         />
       )}
       {type === "pdf" && <PdfType />}
-      {type === "tv" && <TvType />}
+      {type === "tv" && (
+        <TvType
+          tvService={pdService}
+          handleImageError={handleImageError}
+          imageError={imageError}
+        />
+      )}
       {type === "mm" && <MmType />}
     </ScrollView>
   );
 };
 
-export default PdPage;
+export default DetailPage;

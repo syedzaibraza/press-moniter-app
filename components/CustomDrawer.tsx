@@ -15,7 +15,7 @@ export default function CustomDrawerContent(props: any) {
   const handleLogout = async () => {
     await AsyncStorage.removeItem("name");
     await AsyncStorage.removeItem("token");
-    router.push("/(auth)/sign-in");
+    router.push("/sign-in");
   };
 
   return (

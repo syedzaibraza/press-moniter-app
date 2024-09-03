@@ -39,7 +39,7 @@ const Dashboard = () => {
   if (loading)
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-white">
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#C80202" />
       </SafeAreaView>
     );
   return (
