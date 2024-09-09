@@ -31,7 +31,7 @@ const DetailPage = () => {
   const { params } = useRoute();
   const { type, identifier } = params as { type: string; identifier: string };
   const [loading, setLoading] = useState(false);
-  const [pdService, setPdService] = useState<any | null>(null);
+  const [Service, setService] = useState<any | null>(null);
   const [imageError, setImageError] = useState<ImageErrorState>({});
   const [selectedDate, setSelectedDate] = useState<any | null>(null);
   const [showDate, setShowDate] = useState(false);
@@ -57,7 +57,7 @@ const DetailPage = () => {
       try {
         const checkIsDate = selectedDate ? selectedDate : "";
         const { data }: any = await getSingleServie(identifier, checkIsDate);
-        setPdService(data);
+        setService(data);
       } catch (error) {
         console.error("Error fetching service data:", error);
       } finally {
@@ -86,12 +86,12 @@ const DetailPage = () => {
             >
               <AntDesign name="calendar" size={24} />
               <Text className="text-base ">
-                {pdService?.date ? getFormatedDate(pdService.date) : null}
+                {Service?.date ? getFormatedDate(Service.date) : null}
               </Text>
             </TouchableOpacity>
             {showDate && (
               <DateTimePicker
-                value={pdService?.date ? new Date(pdService.date) : new Date()}
+                value={Service?.date ? new Date(Service.date) : new Date()}
                 mode="date"
                 display="calendar"
                 onChange={handleDateChange}
@@ -101,7 +101,7 @@ const DetailPage = () => {
           </View>
         ) : (
           <DateTimePicker
-            value={pdService?.date ? new Date(pdService.date) : new Date()}
+            value={Service?.date ? new Date(Service.date) : new Date()}
             mode="date"
             display="default"
             onChange={handleDateChange}
@@ -125,25 +125,31 @@ const DetailPage = () => {
         />
         <View className="ml-4 items-center">
           <Text className="text-xl text-center font-semibold text-white">
-            {pdService?.name}
+            {Service?.name}
           </Text>
-          <Text className="text-base text-white">
-            {pdService?.date_display}
-          </Text>
+          <Text className="text-base text-white">{Service?.date_display}</Text>
         </View>
       </View>
 
       {type === "pd" && (
         <PdType
-          pdService={pdService}
+          pdService={Service}
           handleImageError={handleImageError}
           imageError={imageError}
         />
       )}
-      {type === "pdf" && <PdfType />}
+      {type === "pdf" && (
+        <PdfType
+          pdfService={Service}
+          handleImageError={handleImageError}
+          imageError={imageError}
+          selectedDate={selectedDate}
+          id={identifier}
+        />
+      )}
       {type === "tv" && (
         <TvType
-          tvService={pdService}
+          tvService={Service}
           handleImageError={handleImageError}
           imageError={imageError}
         />

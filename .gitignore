@@ -1,6 +1,7 @@
 # Expo
 .expo/
 .expo-shared/
+.idea/
 
 # React Native
 node_modules/
