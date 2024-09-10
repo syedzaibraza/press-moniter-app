@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -23,7 +23,17 @@ import TvType from "@/components/Tv";
 import PdfType from "@/components/Pdf";
 import MmType from "@/components/Mm";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { AntDesign } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  FontAwesome5,
+  Foundation,
+  Ionicons,
+  MaterialIcons,
+  Octicons,
+} from "@expo/vector-icons";
+import RangeModal from "@/components/RangeModal";
+import { set } from "react-hook-form";
 
 type ImageErrorState = Record<string, boolean>;
 
@@ -35,6 +45,19 @@ const DetailPage = () => {
   const [imageError, setImageError] = useState<ImageErrorState>({});
   const [selectedDate, setSelectedDate] = useState<any | null>(null);
   const [showDate, setShowDate] = useState(false);
+  const [fmt, setFmt] = useState("print");
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
+  const [checkedNews, setCheckedNews] = useState<any | null>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [rangeInput, setRangeInput] = useState("");
+  const childRef = useRef();
+
+  const handleParentSubmit = () => {
+    if (childRef.current) {
+      // @ts-ignore
+      childRef.current.submit();
+    }
+  };
 
   const handleDateChange = (event: any, date: any) => {
     if (event.type === "set" && date) {
@@ -52,20 +75,21 @@ const DetailPage = () => {
   };
 
   useEffect(() => {
-    const getServicesData = async () => {
-      setLoading(true);
-      try {
-        const checkIsDate = selectedDate ? selectedDate : "";
-        const { data }: any = await getSingleServie(identifier, checkIsDate);
-        setService(data);
-      } catch (error) {
-        console.error("Error fetching service data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     getServicesData();
   }, [identifier, selectedDate]);
+
+  const getServicesData = async () => {
+    setLoading(true);
+    try {
+      const checkIsDate = selectedDate ? selectedDate : "";
+      const { data }: any = await getSingleServie(identifier, checkIsDate);
+      setService(data);
+    } catch (error) {
+      console.error("Error fetching service data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -74,10 +98,107 @@ const DetailPage = () => {
       </SafeAreaView>
     );
   }
-
+  const nav = [
+    {
+      icon: <MaterialIcons name="tv" size={24} color="black" />,
+      label: "Version for Online Reading",
+      method: function () {
+        setFmt("online");
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+      },
+    },
+    {
+      icon: <Foundation name="print" size={24} color="black" />,
+      label: "Printable Version",
+      method: function () {
+        setFmt("print");
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+      },
+    },
+    {
+      icon: <Octicons name="download" size={24} color="black" />,
+      label: "Download All",
+      method: function () {
+        setCheckedItems(new Array(Service?.items?.length).fill(true));
+        const allIdentifiers = Service?.items?.map(
+          (item: any) => item.identifier
+        );
+        setCheckedNews((pre: any) => [...pre, ...allIdentifiers]);
+        setTimeout(() => {
+          handleParentSubmit();
+        }, 100);
+      },
+    },
+    {
+      icon: <MaterialIcons name="downloading" size={24} color="black" />,
+      label: "Download Range",
+      method: () => {
+        setIsModalVisible(true);
+      },
+    },
+    {
+      icon: <Ionicons name="toggle-sharp" size={24} color="black" />,
+      label: "Toggle All",
+      method: function () {
+        setCheckedItems((prev) => prev.map((item) => !item));
+        const allIdentifiers = Service?.items?.map(
+          (item: any) => item.identifier
+        );
+        setCheckedNews((pre: any) => [...pre, ...allIdentifiers]);
+      },
+    },
+    {
+      icon: <Feather name="x-circle" size={24} color="black" />,
+      label: "Clear All",
+      method: function () {
+        setCheckedItems(new Array(Service?.items?.length).fill(false));
+        setCheckedNews([]);
+      },
+    },
+    {
+      icon: <FontAwesome5 name="check-square" size={24} color="black" />,
+      label: "Check All",
+      method: function () {
+        setCheckedItems(new Array(Service?.items?.length).fill(true));
+        const allIdentifiers = Service?.items?.map(
+          (item: any) => item.identifier
+        );
+        setCheckedNews((pre: any) => [...pre, ...allIdentifiers]);
+      },
+    },
+  ];
   return (
     <ScrollView className="flex-1 p-4">
-      <View className="mb-4 w-full items-start">
+      <View className="mb-4 w-full gap-3 items-start justify-start">
+        <View>
+          {type === "pdf" && (
+            <View className="flex-wrap flex-row items-center w-full">
+              <View className="flex-row flex-wrap gap-2">
+                {nav.map((item, index) => (
+                  <View key={index} className="flex-row items-center">
+                    <TouchableOpacity
+                      onPress={item?.method}
+                      className="flex-row items-center gap-3"
+                    >
+                      {item.icon}
+                      <Text className="text-lg">{item.label}</Text>
+                    </TouchableOpacity>
+                    {index < 6 && (
+                      <View className="w-[2px] h-6 bg-gray-400 mx-2" />
+                    )}
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
+
         {Platform.OS === "android" ? (
           <View className="bg-gray-300 rounded-lg p-2">
             <TouchableOpacity
@@ -104,6 +225,7 @@ const DetailPage = () => {
             value={Service?.date ? new Date(Service.date) : new Date()}
             mode="date"
             display="default"
+            className="w-screen m-0"
             onChange={handleDateChange}
             maximumDate={new Date()}
           />
@@ -123,7 +245,7 @@ const DetailPage = () => {
           className="w-14 h-14 rounded-lg bg-white"
           resizeMode="contain"
         />
-        <View className="ml-4 items-center">
+        <View className="flex-1 items-center">
           <Text className="text-xl text-center font-semibold text-white">
             {Service?.name}
           </Text>
@@ -131,30 +253,85 @@ const DetailPage = () => {
         </View>
       </View>
 
-      {type === "pd" && (
+      {type === "pd" ? (
         <PdType
           pdService={Service}
           handleImageError={handleImageError}
           imageError={imageError}
         />
-      )}
-      {type === "pdf" && (
+      ) : type === "pdf" ? (
         <PdfType
+          ref={childRef}
           pdfService={Service}
           handleImageError={handleImageError}
           imageError={imageError}
           selectedDate={selectedDate}
           id={identifier}
+          fmt={fmt}
+          checkedItems={checkedItems}
+          setCheckedItems={setCheckedItems}
+          checkedNews={checkedNews}
+          setCheckedNews={setCheckedNews}
         />
-      )}
-      {type === "tv" && (
-        <TvType
-          tvService={Service}
-          handleImageError={handleImageError}
-          imageError={imageError}
-        />
-      )}
-      {type === "mm" && <MmType />}
+      ) : type === "tv" ? (
+        <View>
+          <Text>TV</Text>
+          <TvType
+            tvService={Service}
+            handleImageError={handleImageError}
+            imageError={imageError}
+          />
+        </View>
+      ) : type === "mm" ? (
+        <MmType />
+      ) : null}
+      <RangeModal
+        rangeInput={rangeInput}
+        setRangeInput={setRangeInput}
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onSubmit={() => {
+          const msg =
+            "Invalid Input. Should be given as start-end of clip numbers";
+          if (!rangeInput) return;
+
+          const r = rangeInput.split("-");
+          if (r.length !== 2) {
+            alert(msg);
+            return;
+          }
+
+          let start = parseInt(r[0]);
+          let finish = parseInt(r[1]);
+          if (
+            isNaN(start) ||
+            isNaN(finish) ||
+            start < 1 ||
+            finish < 1 ||
+            start > finish ||
+            finish > Service?.items?.length
+          ) {
+            alert(msg);
+            return;
+          }
+          start -= 1;
+          finish -= 1;
+
+          const newCheckedItems = new Array(Service.items.length).fill(false);
+          for (let i = start; i <= finish; i++) {
+            newCheckedItems[i] = true;
+          }
+          setCheckedItems(newCheckedItems);
+          const checkedNewsIdentifiers = Service?.items
+            ?.filter((_: any, index: any) => newCheckedItems[index])
+            .map((item: any) => item.identifier);
+          setCheckedNews((pre: any) => [...pre, ...checkedNewsIdentifiers]);
+          setTimeout(() => {
+            handleParentSubmit();
+            setIsModalVisible(false);
+          }, 100);
+        }}
+      />
     </ScrollView>
   );
 };

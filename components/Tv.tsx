@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Image } from "expo-image";
-import { useVideoPlayer, VideoView } from "expo-video";
+import { Video } from "expo-av";
 
 type ImageErrorState = Record<string, boolean>;
 interface TvTypeProps {
@@ -15,23 +15,6 @@ const TvType: React.FC<TvTypeProps> = ({
   handleImageError,
   imageError,
 }) => {
-  const [viewableIndex, setViewableIndex] = useState(null);
-
-  // const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
-  //   if (viewableItems.length > 0) {
-  //     const index = viewableItems[0].index;
-  //     setViewableIndex(index);
-  //   }
-  // }).current;
-
-  // const viewabilityConfig = {
-  //   itemVisiblePercentThreshold: 50, // 50% of the item should be visible
-  // };
-
-  // useEffect(() => {
-  //   if (viewableIndex !== null) {
-  //   }
-  // }, [viewableIndex]);
   return (
     <View>
       {tvService?.articleSection && (
@@ -66,25 +49,18 @@ const TvType: React.FC<TvTypeProps> = ({
                 </Text>
                 {relatedArticle.length > 0 &&
                   relatedArticle.map((item: any, index: number) => {
-                    const player = useVideoPlayer(item.url, (player) => {
-                      player.loop = false;
-                      if (index === viewableIndex) {
-                        player.play();
-                      } else {
-                        player.pause();
-                      }
-                    });
-
                     return (
                       <View
                         key={item.identifier}
                         className="rounded-lg my-2 bg-white p-3"
                       >
-                        <VideoView
+                        <Video
+                          isLooping
+                          useNativeControls
                           className="w-full h-44 rounded-lg"
-                          player={player}
-                          allowsFullscreen
-                          allowsPictureInPicture
+                          source={{ uri: item.url }}
+                          //@ts-ignore
+                          resizeMode="contain"
                         />
                         {item.publisher.logo ? (
                           <View>
@@ -120,25 +96,18 @@ const TvType: React.FC<TvTypeProps> = ({
           <View>
             {tvService?.items?.length > 0 &&
               tvService?.items?.map((item: any, index: number) => {
-                const player = useVideoPlayer(item.url, (player) => {
-                  player.loop = false;
-                  if (index === viewableIndex) {
-                    player.play();
-                  } else {
-                    player.pause();
-                  }
-                });
-
                 return (
                   <View
                     key={item.identifier}
                     className="rounded-lg my-2 bg-white p-3"
                   >
-                    <VideoView
+                    <Video
+                      isLooping
+                      useNativeControls
                       className="w-full h-44 rounded-lg"
-                      player={player}
-                      allowsFullscreen
-                      allowsPictureInPicture
+                      source={{ uri: item.url }}
+                      //@ts-ignore
+                      resizeMode="contain"
                     />
                     {item.publisher.logo ? (
                       <View>
