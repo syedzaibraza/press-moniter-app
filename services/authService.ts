@@ -1,8 +1,12 @@
-import { apiCall } from "@/utils/axiosInstance";
+import { apiCall } from "../utils/axiosInstance";
 
 export interface LoginPayload {
   login: string;
   password: string;
+}
+
+export interface ForgotPasswordPayload {
+  login: string;
 }
 export interface LoginResponse {
   data: {
@@ -15,6 +19,23 @@ export interface LoginResponse {
     cname: string;
     "x-api-key": string;
     web_url: string;
+  };
+  errors: any[];
+  error: any[];
+  meta: {
+    db: {
+      calc: {
+        start: number;
+        num: number;
+        host: string;
+      };
+    };
+  };
+}
+
+export interface ForgotPasswordResponse {
+  data: {
+    data: string | object;
   };
   errors: any[];
   error: any[];
@@ -48,7 +69,11 @@ export const signup = (payload: SignUpForm) => {
     body: payload,
   });
 };
-export const isLoggedIn = () => {
-  const token = localStorage.getItem("token");
-  return !!token;
+
+export const ForgotPassword = (login: string) => {
+  const data: ForgotPasswordPayload = { login };
+  return apiCall<ForgotPasswordResponse>("/sec/forgotpassword", {
+    method: "POST",
+    body: data,
+  });
 };

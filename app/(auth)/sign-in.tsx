@@ -99,7 +99,7 @@ const Login = () => {
                 router.push("/forget-password");
               }}
             >
-              <Text className="text-base text-black font-regular">
+              <Text className="text-base font-semibold text-black font-regular">
                 Forgot password
               </Text>
             </TouchableOpacity>
