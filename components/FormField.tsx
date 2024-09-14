@@ -1,10 +1,10 @@
 import { Image } from "expo-image";
-import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 // @ts-ignore
 import eye from "@/assets/icons/eye.svg";
 // @ts-ignore
 import eyeHide from "@/assets/icons/eyeHide.svg";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const FormField = ({
   title,
@@ -20,10 +20,6 @@ const FormField = ({
   loading = false,
   ...props
 }: any) => {
-  console.log("FormField", {
-    title,
-    value,
-  });
   return (
     <View className={`space-y-2 ${otherStyles}`}>
       <Text className="text-base text-black font-medium">{title}</Text>
@@ -48,6 +44,9 @@ const FormField = ({
           keyboardType={type === "number" ? "numeric" : "default"}
           {...props}
         />
+        {type === "dropdown" && (
+          <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
+        )}
 
         {type === "password" && (
           <TouchableOpacity onPress={handleShowPassword}>

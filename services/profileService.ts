@@ -11,6 +11,12 @@ export interface FormValues {
   taxId: string;
   website: string;
 }
+
+export interface CountryState {
+  label: string;
+  value: string;
+}
+
 export interface PasswordFormValues {
   old_password: string;
   password: string;
@@ -40,4 +46,78 @@ export const changePassword = async (
     body: values,
     apiKey: "true",
   });
+};
+
+export const getCountriesData = async (selected: string, lang: string) => {
+  const url = `https://pubapi.bespokeapps.com/ws-base/countriesSelect?selected=${selected}&lang=${lang}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const { data } = await response.json();
+    const regex =
+      /<option(?:\s+selected(?:=['"][^'"]*['"])?)?\s+value=['"]([^'"]+)['"]>([^<]+)<\/option>/g;
+    const countryArray = [];
+    let match;
+
+    while ((match = regex.exec(data?.content)) !== null) {
+      countryArray.push({
+        value: match[1],
+        label: match[2].trim(),
+      });
+    }
+
+    return countryArray;
+  } catch (error) {
+    console.error("API call failed:", error);
+    throw error;
+  }
+};
+
+export const getStatesData = async (
+  selected: string,
+  stateCode: any,
+  lang: any
+) => {
+  const url = `https://pubapi.bespokeapps.com/ws-base/statesSelect?code=${selected}&selected=${stateCode}&lang=${lang}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const { data } = await response.json();
+    const regex =
+      /<option(?:\s+selected(?:=['"][^'"]*['"])?)?\s+value=['"]([^'"]+)['"]>([^<]+)<\/option>/g;
+    const statesArray = [];
+    let match;
+
+    while ((match = regex.exec(data?.content)) !== null) {
+      statesArray.push({
+        value: match[1],
+        label: match[2].trim(),
+      });
+    }
+
+    return statesArray;
+  } catch (error) {
+    console.error("API call failed:", error);
+    throw error;
+  }
 };
