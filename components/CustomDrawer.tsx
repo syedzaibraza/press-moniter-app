@@ -147,7 +147,7 @@ export default function CustomDrawerContent(props: any) {
         )}
       </View>
 
-      <View className="mt-auto border-t border-gray-300">
+      <View className="mt-auto border-t  border-gray-300">
         <TouchableOpacity
           className="flex-row items-center px-5 py-3"
           onPress={handleLogout}
